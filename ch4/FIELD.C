@@ -50,13 +50,54 @@ void Delay(int t)
         x = cos(x);
 }
 
+//make the given matrix into an identity matrix
 void Make_Identity(matrix_ptr i)
 {
-    //make the given matrix into an identity matrix
+    
     i->elem[0][0] = i->elem[1][1] = i->elem[2][2] = 1;
     i->elem[0][1] = i->elem[1][0] = i->elem[1][2] = 0;
     i->elem[2][0] = i->elem[0][2] = i->elem[2][1] = 0;
 }
 
+//zero out the given matrix
 void Clear_Matrix
+{
+    i->elem[0][0] = i->elem[1][1] = i->elem[2][2] = 0;
+    i->elem[0][1] = i->elem[1][0] = i->elem[1][2] = 0;
+    i->elem[2][0] = i->elem[0][2] = i->elem[2][1] = 0;
+}
+
+//multiply 1x3 matrix by 3x3 matrix
+void Mat_Mul(vertex_ptr v, matrix_ptr m)
+{
+    float x_new, y_new;
+    
+    x_new = v->p[0] * m->elem[0][0] + v->p[1] * m->elem[1][0] + m->elem[2][0];
+    y_new = v->p[0] * m->elem[0][1] + v->p[1] * m->elem[1][1] + m->elem[2][1];
+    
+    v->p[X_COMP] = x_new;
+    v->p[Y_COMP] = y_new;
+}
+
+//multiply each point in object by its scaling matrix
+void Scale_Object_Mat(object_ptr obj)
+{
+    int index;
+    
+    for(index = 0; index < obj->num_vertices; index++)
+    {
+        Mat_Mul((vertex_ptr)&obj->vertices[index], (matrix_ptr)&obj->scale);
+    }
+}
+
+//multiply each point in object by its rotation matrix
+void Rotate_Object_Mat(object_ptr obj)
+{
+    int index;
+    
+    for(index = 0; index < obj->num_vertices; index++)
+    {
+        Mat_Mul((vertex_ptr)&obj->vertices[index], (matrix_ptr)&obj->rotation);
+    }
+}
 
